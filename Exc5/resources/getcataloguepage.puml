@@ -1,0 +1,21 @@
+﻿@startuml
+title Запрос каталога товаров в Shop API
+
+participant Front
+participant ShopAPI
+participant Cache
+database ShopDb
+
+Front -> ShopAPI: Запрос данных каталога
+ShopAPI -> Cache: Запрашиваем данные в кеше
+alt Данные есть в кеше
+    Cache --> ShopAPI: Возвращаем данные
+else Данных в кеше нет
+    ShopAPI -> ShopDb: Запрашиваем каталог
+    ShopDb --> ShopAPI: Возвращает данные
+    ShopAPI -> Cache: Обновляем кеш данными из каталога
+    Cache --> ShopAPI: Подтверждает обновления кеша
+end
+ShopAPI --> Front: Возвращаем данные каталога
+
+@enduml
