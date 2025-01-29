@@ -4,8 +4,6 @@ title Обработка событий изменения заказов и и�
 participant Kafka as "Kafka (queue)"
 participant MESEventConsumer
 participant Cache
-database MESDb
-
 Kafka -> MESEventConsumer: Вычитываем сообщение\nо создании/изменении/\nудалении заказа\n(Id={orderId})
 MESEventConsumer -> Cache: Находим закешированные запросы, в результатах которых есть {orderId}
 Cache --> MESEventConsumer: Возвращает данные
