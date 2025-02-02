@@ -1,0 +1,19 @@
+﻿@startuml
+title Обработка событий изменения заказов и инвалидации кеша
+
+participant Kafka as "Kafka (queue)"
+participant MESEventConsumer
+participant Cache
+Kafka -> MESEventConsumer: Вычитываем сообщение\nо создании/изменении/\nудалении заказа\n(Id={orderId})
+MESEventConsumer -> Cache: Находим закешированные запросы, в результатах которых есть {orderId}
+Cache --> MESEventConsumer: Возвращает данные
+
+loop Для каждого запроса
+    MESEventConsumer -> Cache: Инвалидируем кеш по этому запросу 
+    Cache --> MESEventConsumer: Подтверждает инвалидацию
+end
+
+MESEventConsumer -> Cache: Инвалидируем кеш по заказу (Id={orderId})
+Cache --> MESEventConsumer: Подтверждает инвалидацию
+
+@enduml
